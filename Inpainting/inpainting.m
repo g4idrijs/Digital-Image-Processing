@@ -2,7 +2,7 @@ I = imread('wiki.jpg');
 I = rgb2gray(I);
 level = 1;
 
-BW = roipoly(I);
+BW = roipoly(I); % Taking Mask from user
 %{
 for i = 1 : level
     
@@ -54,6 +54,7 @@ end
 
 %H1 = fspecial('gaussian');
 %I = imfilter(I,H1);
+% Algorthim as given in Paper Calculates delta , N , beta Currently executing 100 time steps
 for s =1 :100
     [Ix,Iy] = imgradientxy(I_r);
     H = fspecial('Laplacian');
@@ -81,9 +82,9 @@ for s =1 :100
                     fou = min((I_r(i,j+1)-I_r(i,j)),0);
                     del = sqrt(fir^2 + sec^2 + thi^2 + fou^2);
                 end
-                (val*del*0.1);
                 
-                arb = I_r(i,j) + (0.002*val*del);
+                
+                arb = I_r(i,j) + (0.002*val*del); % Update rule
                 if(arb > 255)
                     arb = 255;
                 end
@@ -94,10 +95,10 @@ for s =1 :100
             end
         end
     end
-    
+     % diffusing step for every 20 steps
     if(mod(s,20) == 9)
         figure, imshow(uint8(I_r));
-        % diffusing
+       
         I_r1 = I_r;
         for i=2 : m-1
             for j=2: n-1
